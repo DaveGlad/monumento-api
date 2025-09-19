@@ -21,7 +21,7 @@ module.exports = {
     "type-case": [2, "always", "lower-case"],
     "type-empty": [2, "never"],
     // Désactiver la règle subject-case pour permettre les noms propres avec majuscules
-    'subject-case': [0, 'never'],
+    "subject-case": [0, "never"],
     "subject-empty": [2, "never"],
     "subject-full-stop": [2, "never", "."],
     "header-max-length": [2, "always", 72],
