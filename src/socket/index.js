@@ -4,9 +4,10 @@ const publicKey = fs.readFileSync('./src/auth/jwtRS256.key.pub');
 const { Server } = require('socket.io');
 
 let messages = {};
+let io;
 
 function setupSocketServer(server) {
-    const io = new Server(server, {
+    io = new Server(server, {
         cors: {
             origin: "*",
             methods: ["GET", "POST"]
@@ -29,7 +30,9 @@ function setupSocketServer(server) {
     });
 
     io.on('connection', (socket) => {
-        console.log('Un utilisateur est connecté');
+        console.log('🔗 Nouvelle connexion WebSocket établie');
+        console.log(`👥 Total clients connectés: ${io.engine.clientsCount}`);
+        console.log(`🔑 Utilisateur connecté: ${socket.user?.userName || 'Anonyme'}`);
     
         socket.on("joinMonument", ({monumentId, role}) => {
             socket.join(`monument_${monumentId}`);
@@ -61,4 +64,30 @@ function setupSocketServer(server) {
     return io;
 }
 
+// Function to notify all connected clients about a new monument
+function notifyNewMonument(monument) {
+    console.log('🔔 Préparation de la notification pour un nouveau monument:', monument.title);
+    
+    if (io) {
+        const notificationData = {
+            event: 'newMonument',
+            data: {
+                id: monument.id,
+                title: monument.title,
+                description: monument.description,
+                createdAt: monument.created
+            }
+        };
+        
+        console.log('Envoi de la notification WebSocket:', JSON.stringify(notificationData));
+        console.log(`Nombre de clients connectés: ${io.engine.clientsCount}`);
+        
+        io.emit('newMonument', notificationData);
+        console.log('Notification envoyée avec succès');
+    } else {
+        console.log('Impossible d\'envoyer la notification: io n\'est pas initialisé');
+    }
+}
+
 module.exports = setupSocketServer;
+module.exports.notifyNewMonument = notifyNewMonument;

@@ -55,6 +55,11 @@ require('./src/routes/login.route')(app)
 require('./src/routes/register.route')(app)
 require('./src/routes/refreshToken.route')(app)
 
+// Favorites routes
+require('./src/routes/addFavorite.route')(app)
+require('./src/routes/removeFavorite.route')(app)
+require('./src/routes/getFavorites.route')(app)
+
 app.use((req, res) => {
     const url = req.originalUrl
     const method = req.method
