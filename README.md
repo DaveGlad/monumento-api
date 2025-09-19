@@ -129,10 +129,10 @@ monumento-api/
 The WebSocket server is accessible at `ws://localhost:3000`. To connect:
 
 ```javascript
-const socket = io('http://localhost:3000', {
+const socket = io("http://localhost:3000", {
   auth: {
-    token: 'your_jwt_token'
-  }
+    token: "your_jwt_token",
+  },
 });
 ```
 
@@ -142,9 +142,9 @@ const socket = io('http://localhost:3000', {
 
 ```javascript
 // Send a message about a monument
-socket.emit('send_message', {
+socket.emit("send_message", {
   monumentId: 1,
-  message: 'This monument is amazing!'
+  message: "This monument is amazing!",
 });
 ```
 
@@ -152,13 +152,15 @@ socket.emit('send_message', {
 
 ```javascript
 // Receive monument messages
-socket.on('monument_message', (data) => {
-  console.log(`Monument ${data.monumentId}: ${data.message} (from ${data.user})`);
+socket.on("monument_message", (data) => {
+  console.log(
+    `Monument ${data.monumentId}: ${data.message} (from ${data.user})`,
+  );
 });
 
 // Receive new monument notifications
-socket.on('newMonument', (monument) => {
-  console.log('New monument added:', monument);
+socket.on("newMonument", (monument) => {
+  console.log("New monument added:", monument);
 });
 ```
 

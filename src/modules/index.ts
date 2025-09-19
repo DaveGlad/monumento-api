@@ -1,8 +1,8 @@
-import { Express } from 'express';
-import { AuthModule } from './auth/auth.module';
-import { FavoritesModule } from './favorites/favorites.module';
-import { MonumentsModule } from './monuments/monuments.module';
-import { UsersModule } from './users/users.module';
+import { Express } from "express";
+import { AuthModule } from "./auth/auth.module";
+import { FavoritesModule } from "./favorites/favorites.module";
+import { MonumentsModule } from "./monuments/monuments.module";
+import { UsersModule } from "./users/users.module";
 
 /**
  * Register all modules with the Express application
@@ -14,9 +14,9 @@ export function registerModules(app: Express): void {
     new AuthModule(),
     new FavoritesModule(),
     new MonumentsModule(),
-    new UsersModule()
+    new UsersModule(),
   ];
-  
+
   // Register each module
-  modules.forEach(module => module.register(app));
+  modules.forEach((module) => module.register(app));
 }

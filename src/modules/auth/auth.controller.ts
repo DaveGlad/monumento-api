@@ -1,11 +1,10 @@
-import { Request, Response } from 'express';
-import { AuthService } from './auth.service';
-import { handleError } from '../../common/filters/http-exception.filter';
+import { Request, Response } from "express";
+import { AuthService } from "./auth.service";
+import { handleError } from "../../common/filters/http-exception.filter";
 
-
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
 
 /**
  * Controller for authentication management
@@ -13,7 +12,6 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  
   async login(req: Request, res: Response): Promise<Response> {
     const { username, password } = req.body as LoginDto;
 
@@ -21,7 +19,7 @@ export class AuthController {
     if (!username || !password) {
       return res.status(400).json({
         message: "Username and password are required",
-        data: null
+        data: null,
       });
     }
 
@@ -30,21 +28,21 @@ export class AuthController {
 
       return res.json({
         message: "Authentication successful",
-        data: authData
+        data: authData,
       });
     } catch (error: any) {
       // Specific handling for authentication errors
-      if (error.message === 'User not found') {
+      if (error.message === "User not found") {
         return res.status(401).json({
           message: "User not found",
-          data: null
+          data: null,
         });
       }
 
-      if (error.message === 'Incorrect password') {
+      if (error.message === "Incorrect password") {
         return res.status(401).json({
           message: "Incorrect password",
-          data: null
+          data: null,
         });
       }
 
@@ -53,7 +51,6 @@ export class AuthController {
     }
   }
 
-  
   async register(req: Request, res: Response): Promise<Response> {
     const { username, password } = req.body as RegisterDto;
 
@@ -61,7 +58,7 @@ export class AuthController {
     if (!username || !password) {
       return res.status(400).json({
         message: "Username and password are required",
-        data: null
+        data: null,
       });
     }
 
@@ -72,15 +69,15 @@ export class AuthController {
         message: "User created successfully",
         data: {
           id: user.id,
-          username: user.username
-        }
+          username: user.username,
+        },
       });
     } catch (error: any) {
       // Specific handling for registration errors
-      if (error.message === 'This user already exists') {
+      if (error.message === "This user already exists") {
         return res.status(409).json({
           message: "This user already exists",
-          data: null
+          data: null,
         });
       }
 
@@ -89,7 +86,6 @@ export class AuthController {
     }
   }
 
-  
   async refreshToken(req: Request, res: Response): Promise<Response> {
     const { refreshToken } = req.body as RefreshTokenDto;
 
@@ -97,7 +93,7 @@ export class AuthController {
     if (!refreshToken) {
       return res.status(400).json({
         message: "Refresh token is required",
-        data: null
+        data: null,
       });
     }
 
@@ -106,14 +102,17 @@ export class AuthController {
 
       return res.json({
         message: "Access token refreshed successfully",
-        data: { accessToken }
+        data: { accessToken },
       });
     } catch (error: any) {
       // Specific handling for token refresh errors
-      if (error.message === 'Invalid refresh token' || error.message === 'Refresh token expired') {
+      if (
+        error.message === "Invalid refresh token" ||
+        error.message === "Refresh token expired"
+      ) {
         return res.status(401).json({
           message: error.message,
-          data: null
+          data: null,
         });
       }
 

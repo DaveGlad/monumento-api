@@ -12,9 +12,9 @@
  *     summary: WebSocket connection endpoint
  *     description: |
  *       Connect to the WebSocket server using Socket.IO.
- *       
+ *
  *       ## Connection
- *       
+ *
  *       ```javascript
  *       const socket = io('http://localhost:3000', {
  *         auth: {
@@ -22,11 +22,11 @@
  *         }
  *       });
  *       ```
- *       
+ *
  *       ## Events
- *       
+ *
  *       ### Send Events
- *       
+ *
  *       ```javascript
  *       // Send a message about a monument
  *       socket.emit('send_message', {
@@ -34,15 +34,15 @@
  *         message: 'This monument is amazing!'
  *       });
  *       ```
- *       
+ *
  *       ### Receive Events
- *       
+ *
  *       ```javascript
  *       // Receive monument messages
  *       socket.on('monument_message', (data) => {
  *         console.log(`Monument ${data.monumentId}: ${data.message} (from ${data.user})`);
  *       });
- *       
+ *
  *       // Receive new monument notifications
  *       socket.on('newMonument', (monument) => {
  *         console.log('New monument added:', monument);

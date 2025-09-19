@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt';
-import jwt, { SignOptions } from 'jsonwebtoken';
-import { User } from '../../config/database';
-import { jwtConfig } from '../../config/env.config';
+import bcrypt from "bcrypt";
+import jwt, { SignOptions } from "jsonwebtoken";
+import { User } from "../../config/database";
+import { jwtConfig } from "../../config/env.config";
 
 /**
  * Service for authentication management
@@ -13,7 +13,10 @@ export class AuthService {
    * @param password - Password
    * @returns Authentication information with tokens
    */
-  async login(username: string, password: string): Promise<{
+  async login(
+    username: string,
+    password: string,
+  ): Promise<{
     userId: number;
     accessToken: string;
     refreshToken: string;
@@ -21,27 +24,33 @@ export class AuthService {
     // Find user
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error('Incorrect password');
+      throw new Error("Incorrect password");
     }
 
     // Generate access token
     const accessToken = jwt.sign(
       { userName: user.username },
       jwtConfig.privateKey,
-      { algorithm: 'RS256', expiresIn: jwtConfig.accessTokenExpiry } as SignOptions
+      {
+        algorithm: "RS256",
+        expiresIn: jwtConfig.accessTokenExpiry,
+      } as SignOptions,
     );
 
     // Generate refresh token
     const refreshToken = jwt.sign(
       { userName: user.username },
       jwtConfig.privateKey,
-      { algorithm: 'RS256', expiresIn: jwtConfig.refreshTokenExpiry } as SignOptions
+      {
+        algorithm: "RS256",
+        expiresIn: jwtConfig.refreshTokenExpiry,
+      } as SignOptions,
     );
 
     // Decode refresh token to get expiration date
@@ -56,7 +65,7 @@ export class AuthService {
     return {
       userId: user.id,
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
@@ -70,7 +79,7 @@ export class AuthService {
     // Check if user already exists
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      throw new Error('This user already exists');
+      throw new Error("This user already exists");
     }
 
     // Hash password
@@ -79,7 +88,7 @@ export class AuthService {
     // Create user
     const user = await User.create({
       username,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     return user;
@@ -94,19 +103,22 @@ export class AuthService {
     // Find user by refresh token
     const user = await User.findOne({ where: { refreshToken } });
     if (!user) {
-      throw new Error('Invalid refresh token');
+      throw new Error("Invalid refresh token");
     }
 
     // Check token expiration
     if (user.refreshTokenExpiry && user.refreshTokenExpiry < new Date()) {
-      throw new Error('Refresh token expired');
+      throw new Error("Refresh token expired");
     }
 
     // Generate new access token
     const accessToken = jwt.sign(
       { userName: user.username },
       jwtConfig.privateKey,
-      { algorithm: 'RS256', expiresIn: jwtConfig.accessTokenExpiry } as SignOptions
+      {
+        algorithm: "RS256",
+        expiresIn: jwtConfig.accessTokenExpiry,
+      } as SignOptions,
     );
 
     return accessToken;

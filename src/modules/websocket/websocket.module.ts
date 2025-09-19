@@ -1,5 +1,5 @@
-import { Express } from 'express';
-import { WebSocketNotificationService } from './websocket.service';
+import { Express } from "express";
+import { WebSocketNotificationService } from "./websocket.service";
 
 /**
  * WebSocket module
@@ -11,9 +11,9 @@ export class WebSocketModule {
    */
   register(app: Express): void {
     // WebSocket module doesn't need to register routes
-    console.log('WebSocket module registered');
+    console.log("WebSocket module registered");
   }
-  
+
   /**
    * Get WebSocket notification service
    */

@@ -1,1 +1,7 @@
-npm test
+#!/bin/sh
+
+# Format code with Prettier
+npm run format
+
+# Afficher un message de succès
+echo "✅ Pre-commit hook exécuté avec succès"

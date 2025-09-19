@@ -77,9 +77,9 @@
  *     summary: WebSocket connection endpoint
  *     description: |
  *       Connect to the WebSocket server using Socket.IO.
- *       
+ *
  *       ## Connection
- *       
+ *
  *       ```javascript
  *       const socket = io('http://localhost:3000', {
  *         auth: {
@@ -87,9 +87,9 @@
  *         }
  *       });
  *       ```
- *       
+ *
  *       ## Events
- *       
+ *
  *       ### Send message
  *       ```javascript
  *       socket.emit('send_message', {
@@ -97,7 +97,7 @@
  *         message: 'This monument is amazing!'
  *       });
  *       ```
- *       
+ *
  *       ### Receive message
  *       ```javascript
  *       socket.on('monument_message', (data) => {

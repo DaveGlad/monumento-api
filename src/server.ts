@@ -1,16 +1,15 @@
-import express, { Request, Response } from 'express';
-import http from 'http';
-import favicon from 'serve-favicon';
-import morgan from 'morgan';
-import path from 'path';
-import { initDb } from './config/database';
-import { authMiddleware } from './modules/auth/auth.middleware';
-import { setupWebSocketServer } from './modules/websocket/websocket.service';
-import { registerModules } from './modules';
-import { nightBlockerMiddleware } from './common/middlewares/night-blocker.middleware';
-import { setupSwagger } from './config/swagger';
-// Importer la documentation Swagger
-import './docs/swagger/index';
+import express, { Request, Response } from "express";
+import http from "http";
+import favicon from "serve-favicon";
+import morgan from "morgan";
+import path from "path";
+import { initDb } from "./config/database";
+import { authMiddleware } from "./modules/auth/auth.middleware";
+import { setupWebSocketServer } from "./modules/websocket/websocket.service";
+import { registerModules } from "./modules";
+import { nightBlockerMiddleware } from "./common/middlewares/night-blocker.middleware";
+import { setupSwagger } from "./config/swagger";
+import "./docs/swagger/index";
 
 // Create Express application
 const app = express();
@@ -19,14 +18,12 @@ const server = http.createServer(app);
 // Setup Socket.io
 setupWebSocketServer(server);
 
-// Use the night blocker middleware from common/middlewares
-
 // Initialize database
 initDb().then((success) => {
   if (success) {
-    console.log('Database initialized successfully');
+    console.log("Database initialized successfully");
   } else {
-    console.error('Failed to initialize database');
+    console.error("Failed to initialize database");
   }
 });
 
@@ -35,8 +32,8 @@ app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(nightBlockerMiddleware)
-  .use(favicon(path.join(__dirname, '../favicon.ico')))
-  .use(morgan('dev'));
+  .use(favicon(path.join(__dirname, "../favicon.ico")))
+  .use(morgan("dev"));
 
 // Setup Swagger Documentation - avant l'authentification pour permettre l'accès à la documentation sans token
 setupSwagger(app);
@@ -45,12 +42,14 @@ setupSwagger(app);
 app.use(authMiddleware);
 
 // Home route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to the Monumento API! Use the routes to interact with monuments.');
+app.get("/", (req: Request, res: Response) => {
+  res.send(
+    "Welcome to the Monumento API! Use the routes to interact with monuments.",
+  );
 });
 
 // Route de test pour la documentation Swagger
-app.get('/swagger-test', (req: Request, res: Response) => {
+app.get("/swagger-test", (req: Request, res: Response) => {
   res.send(`
     <html>
       <head>
@@ -67,18 +66,18 @@ app.get('/swagger-test', (req: Request, res: Response) => {
 });
 
 // Route pour accéder à la documentation JSON brute
-app.get('/swagger.json', (req: Request, res: Response) => {
-  const swaggerJsDoc = require('swagger-jsdoc');
+app.get("/swagger.json", (req: Request, res: Response) => {
+  const swaggerJsDoc = require("swagger-jsdoc");
   const swaggerOptions = {
     definition: {
-      openapi: '3.0.0',
+      openapi: "3.0.0",
       info: {
-        title: 'Monumento API',
-        version: '1.0.0',
-        description: 'API for managing monuments and user interactions',
+        title: "Monumento API",
+        version: "1.0.0",
+        description: "API for managing monuments and user interactions",
       },
     },
-    apis: ['./src/docs/swagger/**/*.ts'],
+    apis: ["./src/docs/swagger/**/*.ts"],
   };
   const swaggerDocs = swaggerJsDoc(swaggerOptions);
   res.json(swaggerDocs);

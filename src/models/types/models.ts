@@ -1,4 +1,4 @@
-import { Model, Optional } from 'sequelize';
+import { Model, Optional } from "sequelize";
 
 // Interface pour User
 export interface UserAttributes {
@@ -11,9 +11,15 @@ export interface UserAttributes {
   updated?: Date;
 }
 
-export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'created' | 'updated' | 'refreshToken' | 'refreshTokenExpiry'> {}
+export interface UserCreationAttributes
+  extends Optional<
+    UserAttributes,
+    "id" | "created" | "updated" | "refreshToken" | "refreshTokenExpiry"
+  > {}
 
-export interface UserInstance extends Model<UserAttributes, UserCreationAttributes>, UserAttributes {}
+export interface UserInstance
+  extends Model<UserAttributes, UserCreationAttributes>,
+    UserAttributes {}
 
 // Interface pour Monument
 export interface MonumentAttributes {
@@ -27,9 +33,15 @@ export interface MonumentAttributes {
   created?: Date;
 }
 
-export interface MonumentCreationAttributes extends Optional<MonumentAttributes, 'id' | 'created' | 'buildYear' | 'picture' | 'description'> {}
+export interface MonumentCreationAttributes
+  extends Optional<
+    MonumentAttributes,
+    "id" | "created" | "buildYear" | "picture" | "description"
+  > {}
 
-export interface MonumentInstance extends Model<MonumentAttributes, MonumentCreationAttributes>, MonumentAttributes {}
+export interface MonumentInstance
+  extends Model<MonumentAttributes, MonumentCreationAttributes>,
+    MonumentAttributes {}
 
 // Interface pour Favorite
 export interface FavoriteAttributes {
@@ -39,6 +51,9 @@ export interface FavoriteAttributes {
   created?: Date;
 }
 
-export interface FavoriteCreationAttributes extends Optional<FavoriteAttributes, 'id' | 'created'> {}
+export interface FavoriteCreationAttributes
+  extends Optional<FavoriteAttributes, "id" | "created"> {}
 
-export interface FavoriteInstance extends Model<FavoriteAttributes, FavoriteCreationAttributes>, FavoriteAttributes {}
+export interface FavoriteInstance
+  extends Model<FavoriteAttributes, FavoriteCreationAttributes>,
+    FavoriteAttributes {}

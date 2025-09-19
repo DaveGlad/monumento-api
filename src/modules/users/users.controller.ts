@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { handleError } from '../../common/filters/http-exception.filter';
-import { User } from '../../config/database';
+import { Request, Response } from "express";
+import { handleError } from "../../common/filters/http-exception.filter";
+import { User } from "../../config/database";
 
 // Définition inline du service utilisateur
 class UsersService {
@@ -21,35 +21,31 @@ class UsersService {
   }
 }
 
-
-
-
 /**
  * Controller for users management
  */
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  
   async getProfile(req: Request, res: Response): Promise<Response> {
     const username = req.user.userName;
 
     try {
       const user = await this.usersService.findByUsername(username);
-      
+
       if (!user) {
         return res.status(404).json({
           message: "User not found",
-          data: null
+          data: null,
         });
       }
 
       // Remove sensitive information
       const { password, refreshToken, ...userProfile } = user.toJSON();
-      
+
       return res.json({
         message: "User profile retrieved successfully",
-        data: userProfile
+        data: userProfile,
       });
     } catch (error: any) {
       const message = "Error retrieving user profile";
@@ -57,20 +53,19 @@ export class UsersController {
     }
   }
 
-  
   async getAllUsers(req: Request, res: Response): Promise<Response> {
     try {
       const users = await this.usersService.findAll();
-      
+
       // Remove sensitive information
-      const sanitizedUsers = users.map(user => {
+      const sanitizedUsers = users.map((user) => {
         const { password, refreshToken, ...userProfile } = user.toJSON();
         return userProfile;
       });
-      
+
       return res.json({
         message: "Users retrieved successfully",
-        data: sanitizedUsers
+        data: sanitizedUsers,
       });
     } catch (error: any) {
       const message = "Error retrieving users";

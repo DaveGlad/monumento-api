@@ -1,4 +1,4 @@
-import { User } from '../../config/database';
+import { User } from "../../config/database";
 
 /**
  * Service for users management

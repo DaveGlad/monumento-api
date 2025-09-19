@@ -1,5 +1,5 @@
-import { Server } from 'socket.io';
-import { MonumentInstance } from '../models/types/models';
+import { Server } from "socket.io";
+import { MonumentInstance } from "../models/types/models";
 
 /**
  * Service for WebSocket management
@@ -21,24 +21,29 @@ export class WebSocketService {
    */
   static notifyNewMonument(monument: MonumentInstance): void {
     if (!WebSocketService.io) {
-      console.log('Unable to send notification: io is not initialized');
+      console.log("Unable to send notification: io is not initialized");
       return;
     }
 
     const notificationData = {
-      event: 'newMonument',
+      event: "newMonument",
       data: {
         id: monument.id,
         title: monument.title,
         description: monument.description,
-        createdAt: monument.created
-      }
+        createdAt: monument.created,
+      },
     };
 
-    console.log('Envoi de la notification WebSocket:', JSON.stringify(notificationData));
-    console.log(`Nombre de clients connectés: ${WebSocketService.io.engine.clientsCount}`);
+    console.log(
+      "Envoi de la notification WebSocket:",
+      JSON.stringify(notificationData),
+    );
+    console.log(
+      `Nombre de clients connectés: ${WebSocketService.io.engine.clientsCount}`,
+    );
 
-    WebSocketService.io.emit('newMonument', notificationData);
-    console.log('Notification envoyée avec succès');
+    WebSocketService.io.emit("newMonument", notificationData);
+    console.log("Notification envoyée avec succès");
   }
 }

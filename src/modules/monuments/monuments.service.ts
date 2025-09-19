@@ -1,5 +1,5 @@
-import { Monument } from '../../config/database';
-import { Op } from 'sequelize';
+import { Monument } from "../../config/database";
+import { Op } from "sequelize";
 
 /**
  * Service for monuments management
@@ -18,21 +18,25 @@ export class MonumentsService {
    * @param criteria - Search criteria
    * @returns List of monuments matching criteria
    */
-  async search(criteria: { title?: string; country?: string; city?: string }): Promise<any[]> {
+  async search(criteria: {
+    title?: string;
+    country?: string;
+    city?: string;
+  }): Promise<any[]> {
     const where: any = {};
-    
+
     if (criteria.title) {
       where.title = { [Op.like]: `%${criteria.title}%` };
     }
-    
+
     if (criteria.country) {
       where.country = { [Op.like]: `%${criteria.country}%` };
     }
-    
+
     if (criteria.city) {
       where.city = { [Op.like]: `%${criteria.city}%` };
     }
-    
+
     return Monument.findAll({ where });
   }
 
@@ -62,11 +66,11 @@ export class MonumentsService {
    */
   async update(id: number, monumentData: any): Promise<any | null> {
     const monument = await Monument.findByPk(id);
-    
+
     if (!monument) {
       return null;
     }
-    
+
     return monument.update(monumentData);
   }
 
@@ -77,11 +81,11 @@ export class MonumentsService {
    */
   async delete(id: number): Promise<boolean> {
     const monument = await Monument.findByPk(id);
-    
+
     if (!monument) {
       return false;
     }
-    
+
     await monument.destroy();
     return true;
   }
