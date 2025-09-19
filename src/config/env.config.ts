@@ -3,10 +3,17 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
+// Function to process key strings and replace escaped newlines with actual newlines
+function processKey(key: string | undefined): string {
+  if (!key) return '';
+  // Replace escaped newlines with actual newlines
+  return key.replace(/\\n/g, '\n');
+}
+
 // JWT Configuration
 export const jwtConfig = {
-  privateKey: process.env.JWT_PRIVATE_KEY || '',
-  publicKey: process.env.JWT_PUBLIC_KEY || '',
+  privateKey: processKey(process.env.JWT_PRIVATE_KEY),
+  publicKey: processKey(process.env.JWT_PUBLIC_KEY),
   algorithm: process.env.JWT_ALGORITHM || 'RS256',
   accessTokenExpiry: process.env.JWT_ACCESS_TOKEN_EXPIRY || '30m',
   refreshTokenExpiry: process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d'

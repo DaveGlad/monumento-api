@@ -33,14 +33,14 @@ export class AuthService {
     // Generate access token
     const accessToken = jwt.sign(
       { userName: user.username },
-      Buffer.from(jwtConfig.privateKey),
+      jwtConfig.privateKey,
       { algorithm: 'RS256', expiresIn: jwtConfig.accessTokenExpiry } as SignOptions
     );
 
     // Generate refresh token
     const refreshToken = jwt.sign(
       { userName: user.username },
-      Buffer.from(jwtConfig.privateKey),
+      jwtConfig.privateKey,
       { algorithm: 'RS256', expiresIn: jwtConfig.refreshTokenExpiry } as SignOptions
     );
 
@@ -105,7 +105,7 @@ export class AuthService {
     // Generate new access token
     const accessToken = jwt.sign(
       { userName: user.username },
-      Buffer.from(jwtConfig.privateKey),
+      jwtConfig.privateKey,
       { algorithm: 'RS256', expiresIn: jwtConfig.accessTokenExpiry } as SignOptions
     );
 

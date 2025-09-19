@@ -26,7 +26,7 @@ export function setupWebSocketServer(server: HttpServer): void {
       return next(new Error("Token missing"));
     }
 
-    jwt.verify(token, Buffer.from(jwtConfig.publicKey), { algorithms: ['RS256'] } as VerifyOptions, (err, decoded) => {
+    jwt.verify(token, jwtConfig.publicKey, { algorithms: ['RS256'] } as VerifyOptions, (err, decoded) => {
       if (err) {
         return next(new Error("Invalid token"));
       }

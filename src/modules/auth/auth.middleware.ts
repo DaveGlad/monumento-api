@@ -43,7 +43,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
   try {
     // Verify and decode token
-    const decoded = jwt.verify(token, Buffer.from(jwtConfig.publicKey), { algorithms: ['RS256'] } as VerifyOptions);
+    const decoded = jwt.verify(token, jwtConfig.publicKey, { algorithms: ['RS256'] } as VerifyOptions);
     
     // Add user information to the request
     req.user = decoded;
