@@ -7,8 +7,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { initDb } from './config/database';
 import { authMiddleware } from './modules/auth/auth.middleware';
-import routes, { registerModules } from './routes';
 import { setupWebSocketServer } from './modules/websocket/websocket.service';
+import { registerModules } from './modules';
 import { nightBlockerMiddleware } from './common/middlewares/night-blocker.middleware';
 
 // Create Express application
@@ -53,7 +53,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/routes/*.ts'],
+  apis: ['./src/modules/**/*.ts'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -77,9 +77,6 @@ app.get('/', (req: Request, res: Response) => {
 
 // Register all modules
 registerModules(app);
-
-// Legacy API Routes
-app.use(routes);
 
 // Handle not found routes
 app.use((req: Request, res: Response) => {
