@@ -1,18 +1,18 @@
 import { Sequelize } from 'sequelize';
 import UserModel from '../models/user';
 import MonumentModel from '../models/monument';
-import AnecdoteModel from '../models/anecdote';
 import FavoriteModel from '../models/favorite';
+import { dbConfig } from './env.config';
 
 // Database connection configuration
 const sequelize = new Sequelize(
-  'monumento',
-  'root',
-  'root',
+  dbConfig.name,
+  dbConfig.user,
+  dbConfig.password,
   {
-    host: 'localhost',
-    port: 8889,
-    dialect: 'mysql',
+    host: dbConfig.host,
+    port: dbConfig.port,
+    dialect: dbConfig.dialect as any,
     logging: console.log
   }
 );
@@ -20,13 +20,9 @@ const sequelize = new Sequelize(
 // Initialize models
 const User = UserModel(sequelize);
 const Monument = MonumentModel(sequelize);
-const Anecdote = AnecdoteModel(sequelize);
 const Favorite = FavoriteModel(sequelize);
 
 // Define relationships
-Monument.hasMany(Anecdote, { foreignKey: 'monument_id', as: 'anecdotes' });
-Anecdote.belongsTo(Monument, { foreignKey: 'monument_id', as: 'monument' });
-
 // Many-to-Many relationship between User and Monument via Favorite
 User.belongsToMany(Monument, { through: Favorite, foreignKey: 'userId', as: 'favoriteMonuments' });
 Monument.belongsToMany(User, { through: Favorite, foreignKey: 'monumentId', as: 'favoriteUsers' });
@@ -52,6 +48,5 @@ export {
   initDb,
   User,
   Monument,
-  Anecdote,
   Favorite
 };

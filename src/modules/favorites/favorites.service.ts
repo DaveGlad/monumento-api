@@ -1,17 +1,16 @@
-import { User, Monument, Favorite } from '../config/database';
-import { FavoriteInstance, MonumentInstance } from '../types/models';
+import { User, Monument, Favorite } from '../../config/database';
 
 /**
  * Service for favorites management
  */
-export class FavoriteService {
+export class FavoritesService {
   /**
    * Add a monument to a user's favorites
    * @param username - Username
    * @param monumentId - ID of the monument to add to favorites
    * @returns The created favorite object and the associated monument
    */
-  static async addFavorite(username: string, monumentId: number): Promise<{ favorite: FavoriteInstance, monument: MonumentInstance }> {
+  async addFavorite(username: string, monumentId: number): Promise<{ favorite: any, monument: any }> {
     // Get user by username
     const user = await User.findOne({ where: { username } });
     if (!user) {
@@ -39,7 +38,7 @@ export class FavoriteService {
    * @param monumentId - ID of the monument to remove from favorites
    * @returns The monument removed from favorites
    */
-  static async removeFavorite(username: string, monumentId: number): Promise<MonumentInstance> {
+  async removeFavorite(username: string, monumentId: number): Promise<any> {
     // Get user by username
     const user = await User.findOne({ where: { username } });
     if (!user) {
@@ -75,10 +74,10 @@ export class FavoriteService {
    * @param username - Username
    * @returns The user's favorites with associated monuments
    */
-  static async getUserFavorites(username: string): Promise<{
-    favorites: FavoriteInstance[],
-    monuments: MonumentInstance[],
-    favoritesWithMonuments: Array<{ favorite: FavoriteInstance, monument: MonumentInstance }>
+  async getUserFavorites(username: string): Promise<{
+    favorites: any[],
+    monuments: any[],
+    favoritesWithMonuments: Array<{ favorite: any, monument: any }>
   }> {
     // Get user by username
     const user = await User.findOne({ where: { username } });
@@ -111,7 +110,7 @@ export class FavoriteService {
     });
 
     // Create a mapping for easy association
-    const monumentsById: { [key: number]: MonumentInstance } = {};
+    const monumentsById: { [key: number]: any } = {};
     monuments.forEach(monument => {
       monumentsById[monument.id] = monument;
     });

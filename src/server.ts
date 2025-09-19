@@ -6,26 +6,19 @@ import path from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { initDb } from './config/database';
-import authMiddleware from './middlewares/auth.middleware';
-import routes from './routes';
-import setupSocketServer from './websockets';
+import { authMiddleware } from './modules/auth/auth.middleware';
+import routes, { registerModules } from './routes';
+import { setupWebSocketServer } from './modules/websocket/websocket.service';
+import { nightBlockerMiddleware } from './common/middlewares/night-blocker.middleware';
 
 // Create Express application
 const app = express();
 const server = http.createServer(app);
 
 // Setup Socket.io
-setupSocketServer(server);
+setupWebSocketServer(server);
 
-// Middleware to block requests during night hours (maintenance)
-function nightBlocker(req: Request, res: Response, next: Function) {
-  const hour = new Date().getHours();
-  if (hour >= 0 && hour < 6) {
-    res.status(503).json({ message: "Server is under maintenance", data: null });
-  } else {
-    next();
-  }
-}
+// Use the night blocker middleware from common/middlewares
 
 // Initialize database
 initDb();
@@ -69,7 +62,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .use(nightBlocker)
+  .use(nightBlockerMiddleware)
   .use(favicon(path.join(__dirname, '../favicon.ico')))
   .use(morgan('dev'))
   .use(authMiddleware);
@@ -82,7 +75,10 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Monumento API! Use the routes to interact with monuments.');
 });
 
-// API Routes
+// Register all modules
+registerModules(app);
+
+// Legacy API Routes
 app.use(routes);
 
 // Handle not found routes

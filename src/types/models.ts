@@ -31,19 +31,6 @@ export interface MonumentCreationAttributes extends Optional<MonumentAttributes,
 
 export interface MonumentInstance extends Model<MonumentAttributes, MonumentCreationAttributes>, MonumentAttributes {}
 
-// Interface pour Anecdote
-export interface AnecdoteAttributes {
-  id: number;
-  content: string;
-  monument_id: number;
-  created?: Date;
-  updated?: Date;
-}
-
-export interface AnecdoteCreationAttributes extends Optional<AnecdoteAttributes, 'id' | 'created' | 'updated'> {}
-
-export interface AnecdoteInstance extends Model<AnecdoteAttributes, AnecdoteCreationAttributes>, AnecdoteAttributes {}
-
 // Interface pour Favorite
 export interface FavoriteAttributes {
   id: number;

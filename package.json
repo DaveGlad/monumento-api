@@ -5,9 +5,9 @@
   "main": "dist/server.js",
   "scripts": {
     "prestart": "npm run build",
-    "build": "ts-node src/auth/generate-keys.ts && tsc",
+    "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node src/auth/generate-keys.ts && nodemon --exec ts-node src/server.ts",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .ts",
     "test": "jest"
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "fs": "^0.0.1-security",

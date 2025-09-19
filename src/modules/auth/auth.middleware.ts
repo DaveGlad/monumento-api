@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import { User } from '../config/database';
-
-// Lecture de la clé publique pour vérifier les tokens JWT
-const publicKey = fs.readFileSync('./src/auth/jwtRS256.key.pub');
+import jwt, { VerifyOptions } from 'jsonwebtoken';
+import { jwtConfig } from '../../config/env.config';
 
 // Extend Request interface to include user
 declare global {
@@ -19,7 +15,7 @@ declare global {
  * JWT Authentication middleware
  * Verifies JWT token validity and adds the user to the request
  */
-const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   // Public routes that don't require authentication
   const publicRoutes = [
     '/api/login',
@@ -47,7 +43,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
 
   try {
     // Verify and decode token
-    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
+    const decoded = jwt.verify(token, Buffer.from(jwtConfig.publicKey), { algorithms: ['RS256'] } as VerifyOptions);
     
     // Add user information to the request
     req.user = decoded;
@@ -57,5 +53,3 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
     return res.status(403).json({ message: "Invalid authentication token", data: null });
   }
 };
-
-export default authMiddleware;

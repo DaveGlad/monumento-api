@@ -1,24 +1,27 @@
 import { Request, Response } from 'express';
-import { FavoriteService } from '../services/favorite.service';
-import { handleError } from '../utils/error-handler';
+
+import { handleError } from '../../common/filters/http-exception.filter';
+import { FavoritesService } from './favorites.service';
 
 /**
  * Controller for favorites management
  */
-export class FavoriteController {
+export class FavoritesController {
+  constructor(private readonly favoritesService: FavoritesService) {}
+
   /**
    * Add a monument to the connected user's favorites
    * @param req - Express Request
    * @param res - Express Response
    */
-  static async addFavorite(req: Request, res: Response): Promise<Response> {
+  async addFavorite(req: Request, res: Response): Promise<Response> {
     const monumentId = parseInt(req.params.monumentId);
     const username = req.user.userName;
 
     try {
       console.log(`🔍 Adding monument ${monumentId} to user ${username}'s favorites`);
       
-      const result = await FavoriteService.addFavorite(username, monumentId);
+      const result = await this.favoritesService.addFavorite(username, monumentId);
       
       console.log(`✅ Monument ${monumentId} added to user ${username}'s favorites`);
 
@@ -48,14 +51,14 @@ export class FavoriteController {
    * @param req - Express Request
    * @param res - Express Response
    */
-  static async removeFavorite(req: Request, res: Response): Promise<Response> {
+  async removeFavorite(req: Request, res: Response): Promise<Response> {
     const monumentId = parseInt(req.params.monumentId);
     const username = req.user.userName;
 
     try {
       console.log(`🔍 Removing monument ${monumentId} from user ${username}'s favorites`);
       
-      const monument = await FavoriteService.removeFavorite(username, monumentId);
+      const monument = await this.favoritesService.removeFavorite(username, monumentId);
       
       console.log(`✅ Monument ${monumentId} removed from user ${username}'s favorites`);
 
@@ -65,9 +68,9 @@ export class FavoriteController {
       });
     } catch (error: any) {
       // Specific handling for monument not found in favorites
-      if (error.message === "Ce monument n'est pas dans vos favoris") {
+      if (error.message === "This monument is not in your favorites") {
         return res.status(404).json({
-          message: "This monument is not in your favorites",
+          message: error.message,
           data: null
         });
       }
@@ -82,13 +85,13 @@ export class FavoriteController {
    * @param req - Express Request
    * @param res - Express Response
    */
-  static async getFavorites(req: Request, res: Response): Promise<Response> {
+  async getFavorites(req: Request, res: Response): Promise<Response> {
     const username = req.user.userName;
 
     try {
       console.log(`🔍 Getting favorites for user ${username}`);
       
-      const result = await FavoriteService.getUserFavorites(username);
+      const result = await this.favoritesService.getUserFavorites(username);
       
       // If no favorites are found
       if (result.favorites.length === 0) {

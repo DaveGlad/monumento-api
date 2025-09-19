@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { MonumentController } from '../controllers/monument.controller';
+import { MonumentsController } from '../modules/monuments/monuments.controller';
+
+// Create an instance of the controller to use in routes
+const monumentsService = {}; // This is a placeholder
+const monumentController = new MonumentsController(monumentsService as any);
 
 const router = Router();
 
@@ -13,7 +17,7 @@ const router = Router();
  *       200:
  *         description: Liste des monuments récupérée avec succès
  */
-router.get('/', MonumentController.getAllMonuments);
+router.get('/', monumentController.getAllMonuments.bind(monumentController));
 
 /**
  * @swagger
@@ -41,7 +45,7 @@ router.get('/', MonumentController.getAllMonuments);
  *       200:
  *         description: Résultats de la recherche
  */
-router.get('/search', MonumentController.searchMonuments);
+router.get('/search', monumentController.searchMonuments.bind(monumentController));
 
 /**
  * @swagger
@@ -62,7 +66,7 @@ router.get('/search', MonumentController.searchMonuments);
  *       404:
  *         description: Monument non trouvé
  */
-router.get('/:id', MonumentController.getMonumentById);
+router.get('/:id', monumentController.getMonumentById.bind(monumentController));
 
 /**
  * @swagger
@@ -98,7 +102,7 @@ router.get('/:id', MonumentController.getMonumentById);
  *       400:
  *         description: Données invalides
  */
-router.post('/', MonumentController.createMonument);
+router.post('/', monumentController.createMonument.bind(monumentController));
 
 /**
  * @swagger
@@ -128,7 +132,7 @@ router.post('/', MonumentController.createMonument);
  *       404:
  *         description: Monument non trouvé
  */
-router.put('/:id', MonumentController.updateMonument);
+router.put('/:id', monumentController.updateMonument.bind(monumentController));
 
 /**
  * @swagger
@@ -149,6 +153,6 @@ router.put('/:id', MonumentController.updateMonument);
  *       404:
  *         description: Monument non trouvé
  */
-router.delete('/:id', MonumentController.deleteMonument);
+router.delete('/:id', monumentController.deleteMonument.bind(monumentController));
 
 export default router;
