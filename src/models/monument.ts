@@ -1,5 +1,5 @@
 import { DataTypes, Sequelize } from 'sequelize';
-import { MonumentInstance } from '../types/models';
+import { MonumentInstance } from './types/models';
 
 export default (sequelize: Sequelize) => {
   const Monument = sequelize.define<MonumentInstance>('Monument', {

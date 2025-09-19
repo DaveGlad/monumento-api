@@ -1,5 +1,5 @@
 import { DataTypes, Sequelize } from 'sequelize';
-import { FavoriteInstance } from '../types/models';
+import { FavoriteInstance } from './types/models';
 
 export default (sequelize: Sequelize) => {
   const Favorite = sequelize.define<FavoriteInstance>('Favorite', {

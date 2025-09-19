@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { MonumentInstance } from '../types/models';
+import { MonumentInstance } from '../models/types/models';
 
 /**
  * Service for WebSocket management

@@ -1,5 +1,5 @@
 import { DataTypes, Sequelize } from 'sequelize';
-import { UserInstance } from '../types/models';
+import { UserInstance } from './types/models';
 
 export default (sequelize: Sequelize) => {
   const User = sequelize.define<UserInstance>('User', {
