@@ -8,6 +8,5 @@ module.exports = {
     "^.+\.tsx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  // Désactiver Watchman pour éviter les problèmes de permissions
   watchman: false,
 };
