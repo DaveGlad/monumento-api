@@ -307,7 +307,7 @@ export function setupSwagger(app: Express): void {
         },
       ],
     },
-    apis: ['./src/**/*.ts'],
+    apis: ['./src/docs/swagger/**/*.ts'],
   };
 
   try {

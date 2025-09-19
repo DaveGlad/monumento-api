@@ -9,6 +9,8 @@ import { setupWebSocketServer } from './modules/websocket/websocket.service';
 import { registerModules } from './modules';
 import { nightBlockerMiddleware } from './common/middlewares/night-blocker.middleware';
 import { setupSwagger } from './config/swagger';
+// Importer la documentation Swagger
+import './docs/swagger/index';
 
 // Create Express application
 const app = express();
@@ -73,9 +75,10 @@ app.get('/swagger.json', (req: Request, res: Response) => {
       info: {
         title: 'Monumento API',
         version: '1.0.0',
+        description: 'API for managing monuments and user interactions',
       },
     },
-    apis: ['./src/**/*.ts'],
+    apis: ['./src/docs/swagger/**/*.ts'],
   };
   const swaggerDocs = swaggerJsDoc(swaggerOptions);
   res.json(swaggerDocs);

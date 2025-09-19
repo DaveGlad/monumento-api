@@ -2,12 +2,7 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { handleError } from '../../common/filters/http-exception.filter';
 
-/**
- * @swagger
- * tags:
- *   name: Authentication
- *   description: User authentication operations
- */
+
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -18,49 +13,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  /**
-   * @swagger
-   * /api/login:
-   *   post:
-   *     summary: User login
-   *     description: Authenticates a user and returns JWT tokens
-   *     tags: [Authentication]
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/LoginRequest'
-   *     responses:
-   *       200:
-   *         description: Login successful
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/LoginResponse'
-   *       401:
-   *         description: Invalid credentials
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *       429:
-   *         description: Too many login attempts
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *       500:
-   *         description: Server error
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   * 
-   * Authenticate a user
-   * @param req - Express Request
-   * @param res - Express Response
-   */
+  
   async login(req: Request, res: Response): Promise<Response> {
     const { username, password } = req.body as LoginDto;
 
@@ -100,49 +53,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * @swagger
-   * /api/register:
-   *   post:
-   *     summary: User registration
-   *     description: Registers a new user
-   *     tags: [Authentication]
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/RegisterRequest'
-   *     responses:
-   *       201:
-   *         description: User created successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 message:
-   *                   type: string
-   *                   example: User registered successfully
-   *                 data:
-   *                   $ref: '#/components/schemas/User'
-   *       400:
-   *         description: Invalid input or username already exists
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *       500:
-   *         description: Server error
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   * 
-   * Register a new user
-   * @param req - Express Request
-   * @param res - Express Response
-   */
+  
   async register(req: Request, res: Response): Promise<Response> {
     const { username, password } = req.body as RegisterDto;
 
@@ -178,53 +89,7 @@ export class AuthController {
     }
   }
 
-  /**
-   * @swagger
-   * /api/refresh-token:
-   *   post:
-   *     summary: Refresh access token
-   *     description: Refreshes an access token using a refresh token
-   *     tags: [Authentication]
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/RefreshTokenRequest'
-   *     responses:
-   *       200:
-   *         description: Token refreshed successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 message:
-   *                   type: string
-   *                   example: Token refreshed successfully
-   *                 data:
-   *                   type: object
-   *                   properties:
-   *                     accessToken:
-   *                       type: string
-   *                       description: New JWT access token
-   *       401:
-   *         description: Invalid or expired refresh token
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *       500:
-   *         description: Server error
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   * 
-   * Refresh access token
-   * @param req - Express Request
-   * @param res - Express Response
-   */
+  
   async refreshToken(req: Request, res: Response): Promise<Response> {
     const { refreshToken } = req.body as RefreshTokenDto;
 
