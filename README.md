@@ -25,15 +25,15 @@ REST API for managing historical monuments, with favorites system and real-time 
 ```text
 monumento-api/
 ├── src/
-│   ├── config/             # Configuration (database, etc.)
-│   ├── controllers/        # Controllers
-│   ├── middlewares/        # Middlewares
+│   ├── common/             # Common components (middlewares, filters, etc.)
+│   ├── config/             # Configuration (database, environment, etc.)
 │   ├── models/             # Sequelize models
-│   ├── routes/             # API routes
-│   ├── services/           # Business services
-│   ├── types/              # TypeScript types and interfaces
-│   ├── utils/              # Utilities
-│   ├── websockets/         # WebSocket management
+│   ├── modules/            # Application modules
+│   │   ├── auth/           # Authentication module
+│   │   ├── favorites/      # Favorites management module
+│   │   ├── monuments/      # Monuments management module
+│   │   ├── users/          # Users management module
+│   │   └── websocket/      # WebSocket management module
 │   └── server.ts           # Application entry point
 ├── dist/                   # Compiled code (generated)
 ├── node_modules/           # Dependencies
@@ -61,10 +61,14 @@ monumento-api/
    - Create a MySQL database named `monumento`
    - Modify connection parameters in `src/config/database.ts` if necessary
 
-4. Generate JWT keys (done automatically during build):
+4. Configure JWT keys in your `.env` file:
 
-   ```bash
-   ts-node src/auth/generate-keys.ts
+   ```
+   JWT_PRIVATE_KEY=your_private_key
+   JWT_PUBLIC_KEY=your_public_key
+   JWT_ALGORITHM=RS256
+   JWT_ACCESS_TOKEN_EXPIRY=30m
+   JWT_REFRESH_TOKEN_EXPIRY=7d
    ```
 
 5. Compile TypeScript code:
@@ -104,23 +108,70 @@ monumento-api/
 
 - `GET /api/monuments` - Get all monuments
 - `GET /api/monuments/search` - Search monuments
-- `GET /api/monuments/:id` - Get monument by ID
+- `GET /api/monuments/{id}` - Get monument by ID
 - `POST /api/monuments` - Create a monument
-- `PUT /api/monuments/:id` - Update a monument
-- `DELETE /api/monuments/:id` - Delete a monument
+- `PUT /api/monuments/{id}` - Update a monument
+- `DELETE /api/monuments/{id}` - Delete a monument
 
 ### Favorites
 
 - `GET /api/favorites` - Get favorites for connected user
-- `POST /api/favorites/:monumentId` - Add a monument to favorites
-- `DELETE /api/favorites/:monumentId` - Remove a monument from favorites
+- `POST /api/favorites` - Add a monument to favorites
+- `DELETE /api/favorites/{monumentId}` - Remove a monument from favorites
+
+### Users
+
+- `GET /api/users/profile` - Get profile of connected user
+- `GET /api/users` - Get all users (admin only)
 
 ## WebSocket
 
-The WebSocket server is accessible at `ws://localhost:3000`. Available events are:
+The WebSocket server is accessible at `ws://localhost:3000`. To connect:
 
-- `newMonument` - Notification sent when a new monument is created
+```javascript
+const socket = io('http://localhost:3000', {
+  auth: {
+    token: 'your_jwt_token'
+  }
+});
+```
+
+### Available Events
+
+#### Send Events
+
+```javascript
+// Send a message about a monument
+socket.emit('send_message', {
+  monumentId: 1,
+  message: 'This monument is amazing!'
+});
+```
+
+#### Receive Events
+
+```javascript
+// Receive monument messages
+socket.on('monument_message', (data) => {
+  console.log(`Monument ${data.monumentId}: ${data.message} (from ${data.user})`);
+});
+
+// Receive new monument notifications
+socket.on('newMonument', (monument) => {
+  console.log('New monument added:', monument);
+});
+```
 
 ## Documentation
 
-Swagger documentation is available at `http://localhost:3000/api-docs`.
+Detailed Swagger documentation is available at `http://localhost:3000/api-docs`.
+
+You can also access the raw Swagger JSON at `http://localhost:3000/swagger.json`.
+
+### Swagger Tags
+
+- **Authentication**: User authentication operations
+- **Monuments**: Monument management operations
+- **Favorites**: User favorites management
+- **Users**: User management operations
+- **WebSockets**: WebSocket communication for real-time updates

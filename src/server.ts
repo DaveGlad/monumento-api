@@ -3,13 +3,12 @@ import http from 'http';
 import favicon from 'serve-favicon';
 import morgan from 'morgan';
 import path from 'path';
-import swaggerJsDoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 import { initDb } from './config/database';
 import { authMiddleware } from './modules/auth/auth.middleware';
 import { setupWebSocketServer } from './modules/websocket/websocket.service';
 import { registerModules } from './modules';
 import { nightBlockerMiddleware } from './common/middlewares/night-blocker.middleware';
+import { setupSwagger } from './config/swagger';
 
 // Create Express application
 const app = express();
@@ -21,42 +20,13 @@ setupWebSocketServer(server);
 // Use the night blocker middleware from common/middlewares
 
 // Initialize database
-initDb();
-
-// Swagger Configuration
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Monumento API',
-      version: '1.0.0',
-      description: 'API for managing historical monuments',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Development server',
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
-  },
-  apis: ['./src/modules/**/*.ts'],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+initDb().then((success) => {
+  if (success) {
+    console.log('Database initialized successfully');
+  } else {
+    console.error('Failed to initialize database');
+  }
+});
 
 // Middlewares
 app
@@ -64,15 +34,51 @@ app
   .use(express.urlencoded({ extended: true }))
   .use(nightBlockerMiddleware)
   .use(favicon(path.join(__dirname, '../favicon.ico')))
-  .use(morgan('dev'))
-  .use(authMiddleware);
+  .use(morgan('dev'));
 
-// Swagger Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Setup Swagger Documentation - avant l'authentification pour permettre l'accès à la documentation sans token
+setupSwagger(app);
+
+// Middleware d'authentification après Swagger
+app.use(authMiddleware);
 
 // Home route
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Monumento API! Use the routes to interact with monuments.');
+});
+
+// Route de test pour la documentation Swagger
+app.get('/swagger-test', (req: Request, res: Response) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Swagger Test</title>
+      </head>
+      <body>
+        <h1>Swagger Documentation Test</h1>
+        <p>Si vous voyez cette page, le serveur fonctionne correctement.</p>
+        <p>La documentation Swagger devrait être disponible à <a href="/api-docs">/api-docs</a>.</p>
+        <p>Vous pouvez également accéder à la documentation JSON brute à <a href="/swagger.json">/swagger.json</a>.</p>
+      </body>
+    </html>
+  `);
+});
+
+// Route pour accéder à la documentation JSON brute
+app.get('/swagger.json', (req: Request, res: Response) => {
+  const swaggerJsDoc = require('swagger-jsdoc');
+  const swaggerOptions = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Monumento API',
+        version: '1.0.0',
+      },
+    },
+    apis: ['./src/**/*.ts'],
+  };
+  const swaggerDocs = swaggerJsDoc(swaggerOptions);
+  res.json(swaggerDocs);
 });
 
 // Register all modules

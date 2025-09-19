@@ -1,4 +1,11 @@
 import { Request, Response } from 'express';
+
+/**
+ * @swagger
+ * tags:
+ *   name: Monuments
+ *   description: Monument management operations
+ */
 import { handleError } from '../../common/filters/http-exception.filter';
 import { WebSocketNotificationService } from '../websocket/websocket.service';
 import { MonumentsService } from './monuments.service';
@@ -10,9 +17,39 @@ export class MonumentsController {
   constructor(private readonly monumentsService: MonumentsService) {}
 
   /**
+   * @swagger
+   * /api/monuments:
+   *   get:
+   *     summary: Get all monuments
+   *     description: Retrieve a list of all monuments
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: A list of monuments
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Monuments retrieved successfully
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     $ref: '#/components/schemas/Monument'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
    * Get all monuments
-   * @param req - Express Request
-   * @param res - Express Response
+   * @param req - Request object
+   * @param res - Response object
    */
   async getAllMonuments(req: Request, res: Response): Promise<Response> {
     try {
@@ -29,9 +66,55 @@ export class MonumentsController {
   }
 
   /**
+   * @swagger
+   * /api/monuments/search:
+   *   get:
+   *     summary: Search monuments by criteria
+   *     description: Search monuments by title, country, or city
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: query
+   *         name: title
+   *         schema:
+   *           type: string
+   *         description: Monument title
+   *       - in: query
+   *         name: country
+   *         schema:
+   *           type: string
+   *         description: Monument country
+   *       - in: query
+   *         name: city
+   *         schema:
+   *           type: string
+   *         description: Monument city
+   *     responses:
+   *       200:
+   *         description: Search results
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Search results
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     $ref: '#/components/schemas/Monument'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
    * Search monuments by criteria
-   * @param req - Express Request
-   * @param res - Express Response
+   * @param req - Request object
+   * @param res - Response object
    */
   async searchMonuments(req: Request, res: Response): Promise<Response> {
     const { title, country, city } = req.query;
@@ -54,9 +137,50 @@ export class MonumentsController {
   }
 
   /**
-   * Get monument by ID
-   * @param req - Express Request
-   * @param res - Express Response
+   * @swagger
+   * /api/monuments/{id}:
+   *   get:
+   *     summary: Get a monument by ID
+   *     description: Retrieve a monument by its ID
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         description: Monument ID
+   *     responses:
+   *       200:
+   *         description: Monument details
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Monument retrieved successfully
+   *                 data:
+   *                   $ref: '#/components/schemas/Monument'
+   *       404:
+   *         description: Monument not found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
+   * Get a monument by ID
+   * @param req - Request object
+   * @param res - Response object
    */
   async getMonumentById(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
@@ -82,9 +206,49 @@ export class MonumentsController {
   }
 
   /**
+   * @swagger
+   * /api/monuments:
+   *   post:
+   *     summary: Create a new monument
+   *     description: Create a new monument with the provided data
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/MonumentCreateRequest'
+   *     responses:
+   *       201:
+   *         description: Monument created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Monument created successfully
+   *                 data:
+   *                   $ref: '#/components/schemas/Monument'
+   *       400:
+   *         description: Invalid input
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
    * Create a new monument
-   * @param req - Express Request
-   * @param res - Express Response
+   * @param req - Request object
+   * @param res - Response object
    */
   async createMonument(req: Request, res: Response): Promise<Response> {
     const { monument } = req.body;
@@ -106,9 +270,56 @@ export class MonumentsController {
   }
 
   /**
-   * Update an existing monument
-   * @param req - Express Request
-   * @param res - Express Response
+   * @swagger
+   * /api/monuments/{id}:
+   *   put:
+   *     summary: Update a monument
+   *     description: Update a monument with the provided data
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         description: Monument ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/MonumentUpdateRequest'
+   *     responses:
+   *       200:
+   *         description: Monument updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Monument updated successfully
+   *                 data:
+   *                   $ref: '#/components/schemas/Monument'
+   *       404:
+   *         description: Monument not found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
+   * Update a monument
+   * @param req - Request object
+   * @param res - Response object
    */
   async updateMonument(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
@@ -135,9 +346,50 @@ export class MonumentsController {
   }
 
   /**
+   * @swagger
+   * /api/monuments/{id}:
+   *   delete:
+   *     summary: Delete a monument
+   *     description: Delete a monument by its ID
+   *     tags: [Monuments]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         description: Monument ID
+   *     responses:
+   *       200:
+   *         description: Monument deleted successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: Monument deleted successfully
+   *                 data:
+   *                   type: null
+   *       404:
+   *         description: Monument not found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       500:
+   *         description: Server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   * 
    * Delete a monument
-   * @param req - Express Request
-   * @param res - Express Response
+   * @param req - Request object
+   * @param res - Response object
    */
   async deleteMonument(req: Request, res: Response): Promise<Response> {
     const id = parseInt(req.params.id);
